@@ -17,6 +17,7 @@ import {
 } from '@/components/ui/sidebar';
 import Link from 'next/link';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
+import { saveReasoningEffort } from '@/app/(chat)/actions'; // Import saveReasoningEffort action - ADDED
 
 export function AppSidebar({ user }: { user: User | undefined }) {
   const router = useRouter();
@@ -32,6 +33,9 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                 href="/"
                 onClick={() => {
                   setOpenMobile(false);
+                  router.push('/');
+                  saveReasoningEffort('medium'); // Reset reasoning effort to default on new chat - ADDED
+                  router.refresh();
                 }}
                 className="flex flex-row gap-3 items-center"
               >
@@ -60,6 +64,7 @@ export function AppSidebar({ user }: { user: User | undefined }) {
                   onClick={() => {
                     setOpenMobile(false);
                     router.push('/');
+                    saveReasoningEffort('medium'); // Reset reasoning effort to default on new chat - ADDED
                     router.refresh();
                   }}
                 >

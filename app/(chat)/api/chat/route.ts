@@ -57,14 +57,15 @@ const app = new FirecrawlApp({
   apiKey: process.env.FIRECRAWL_API_KEY || '',
 });
 
-const reasoningModel = openai('o1-mini');
+const reasoningModel = openai('o3-mini'); // Reasoning model, can be changed later
 
 export async function POST(request: Request) {
   const {
     id,
     messages,
     modelId,
-  }: { id: string; messages: Array<Message>; modelId: string } =
+    reasoningEffort: reasoningEffortString, // Get reasoningEffort from request - ADDED
+  }: { id: string; messages: Array<Message>; modelId: string; reasoningEffort: string } = // Updated type to include reasoningEffort - ADDED
     await request.json();
 
   let session = await auth();
@@ -146,7 +147,7 @@ export async function POST(request: Request) {
       });
 
       const result = streamText({
-        model: customModel(model.apiIdentifier),
+        model: customModel(model.apiIdentifier), // Use customModel with selected model's apiIdentifier
         system: systemPrompt,
         messages: coreMessages,
         maxSteps: 10,
@@ -417,14 +418,14 @@ export async function POST(request: Request) {
                   system: `You are a spreadsheet manipulation assistant. The current spreadsheet has the following structure:
                     Headers: ${JSON.stringify(currentSpreadsheetData.headers)}
                     Current rows: ${JSON.stringify(currentSpreadsheetData.rows)}
-                    
+
                     When modifying the spreadsheet:
                     1. You can add, remove, or modify columns (headers)
                     2. When adding columns, add empty values to existing rows for the new columns
                     3. When removing columns, remove the corresponding values from all rows
                     4. Return the COMPLETE spreadsheet data including ALL headers and rows
                     5. Format response as valid JSON with 'headers' and 'rows' arrays
-                    
+
                     Example response format:
                     {"headers":["Name","Email","Phone"],"rows":[["John","john@example.com","123-456-7890"],["Jane","jane@example.com","098-765-4321"]]}`,
                   prompt: `${description}\n\nChat History:\n${coreMessages
@@ -1071,6 +1072,11 @@ export async function POST(request: Request) {
         experimental_telemetry: {
           isEnabled: true,
           functionId: 'stream-text',
+        },
+       providerOptions: { // Add providerOptions for reasoning effort - ADDED
+          openai: {
+            reasoningEffort: reasoningEffortString as 'low' | 'medium' | 'high' || 'medium', // Default to medium if not provided - ADDED
+          },
         },
       });
 

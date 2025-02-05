@@ -16,6 +16,11 @@ export async function saveModelId(model: string) {
   cookieStore.set('model-id', model);
 }
 
+export async function saveReasoningEffort(effort: string) { // New function to save reasoning effort - ADDED
+  const cookieStore = await cookies();
+  cookieStore.set('reasoning-effort', effort);
+}
+
 export async function generateTitleFromUserMessage({
   message,
 }: {

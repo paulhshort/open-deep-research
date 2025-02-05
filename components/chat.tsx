@@ -22,12 +22,14 @@ export function Chat({
   selectedModelId,
   selectedVisibilityType,
   isReadonly,
+  selectedReasoningEffort, // Add selectedReasoningEffort prop - ADDED
 }: {
   id: string;
   initialMessages: Array<Message>;
   selectedModelId: string;
   selectedVisibilityType: VisibilityType;
   isReadonly: boolean;
+  selectedReasoningEffort: string; // Add selectedReasoningEffort prop - ADDED
 }) {
   const { mutate } = useSWRConfig();
 
@@ -43,7 +45,7 @@ export function Chat({
     reload,
   } = useChat({
     id,
-    body: { id, modelId: selectedModelId },
+    body: { id, modelId: selectedModelId, reasoningEffort: selectedReasoningEffort }, // Include reasoningEffort in body - ADDED
     initialMessages,
     experimental_throttle: 100,
     onFinish: () => {
@@ -76,10 +78,11 @@ export function Chat({
           selectedModelId={selectedModelId}
           selectedVisibilityType={selectedVisibilityType}
           isReadonly={isReadonly}
+          selectedReasoningEffort={selectedReasoningEffort} // Pass reasoningEffort to ChatHeader - ADDED
         />
 
         <Messages
-          chatId={id}
+          chatId={chatId}
           isLoading={isLoading}
           votes={votes}
           messages={messages}

@@ -8,22 +8,28 @@ import { ModelSelector } from '@/components/model-selector';
 import { SidebarToggle } from '@/components/sidebar-toggle';
 import { Button } from '@/components/ui/button';
 import { PlusIcon, VercelIcon } from './icons';
-import { useSidebar } from './ui/sidebar';
-import { memo, useEffect } from 'react';
+import { useSidebar } from '@/components/ui/sidebar';
+import { memo, useEffect, useState } from 'react';
 import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { VisibilityType, VisibilitySelector } from './visibility-selector';
 import { useDeepResearch } from '@/lib/deep-research-context';
+import { Slider } from '@/components/ui/slider';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { saveReasoningEffort } from '@/app/(chat)/actions'; // Import saveReasoningEffort action - ADDED
 
 function PureChatHeader({
   chatId,
   selectedModelId,
   selectedVisibilityType,
   isReadonly,
+  selectedReasoningEffort, // Add selectedReasoningEffort prop - ADDED
 }: {
   chatId: string;
   selectedModelId: string;
   selectedVisibilityType: VisibilityType;
   isReadonly: boolean;
+  selectedReasoningEffort: string; // Add selectedReasoningEffort prop - ADDED
 }) {
   const router = useRouter();
   const { open } = useSidebar();
@@ -31,6 +37,9 @@ function PureChatHeader({
   const { width: windowWidth } = useWindowSize();
 
   const { clearState } = useDeepResearch();
+
+  const [outputTokens, setOutputTokens] = useState<number>(30000); // Example initial value
+  const [reasoningEffort, setReasoningEffort] = useState<string>(selectedReasoningEffort); // Use prop as initial value - UPDATED
 
   return (
     <header className="flex sticky top-0 bg-background py-1.5 items-center px-2 md:px-2 gap-2">
@@ -45,7 +54,7 @@ function PureChatHeader({
               onClick={() => {
                 router.push('/');
                 clearState();
-
+                saveReasoningEffort('medium'); // Reset reasoning effort to default on new chat - ADDED
                 router.refresh();
               }}
             >
@@ -71,6 +80,35 @@ function PureChatHeader({
           className="order-1 md:order-3"
         />
       )}
+
+      <div className="order-2 md:order-4 ml-auto md:ml-2 hidden md:flex flex-col gap-2">
+        <Label htmlFor="output-tokens">Output Tokens</Label>
+        <Slider
+          id="output-tokens"
+          defaultValue={[outputTokens]}
+          max={40000} // Example max value, adjust based on model
+          step={1000}
+          onValueChange={(value) => setOutputTokens(value[0])}
+        />
+        <div className="text-xs text-muted-foreground">{outputTokens} tokens</div>
+      </div>
+
+      <div className="order-3 md:order-5 ml-2 hidden md:flex flex-col gap-2">
+        <Label htmlFor="reasoning-effort">Reasoning Effort</Label>
+        <Select onValueChange={(value) => {
+          setReasoningEffort(value)
+          saveReasoningEffort(value); // Save reasoning effort to cookie - ADDED
+        }} defaultValue={reasoningEffort}> // Use prop as initial value - UPDATED
+          <SelectTrigger className="w-[180px] h-[34px]">
+            <SelectValue placeholder="Reasoning Effort" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="low">Low</SelectItem>
+            <SelectItem value="medium">Medium</SelectItem>
+            <SelectItem value="high">High</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
 
       {/* <Button
         className="bg-orange-500 dark:bg-zinc-100 hover:bg-orange-800 dark:hover:bg-zinc-200 text-zinc-50 dark:text-zinc-900 hidden md:flex py-1.5 px-2 h-fit md:h-[34px] order-4 md:ml-auto"

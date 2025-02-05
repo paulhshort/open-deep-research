@@ -2,7 +2,7 @@
 
 import { startTransition, useMemo, useOptimistic, useState } from 'react';
 
-import { saveModelId } from '@/app/(chat)/actions';
+import { saveModelId, saveReasoningEffort } from '@/app/(chat)/actions'; // Import saveReasoningEffort - ADDED
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -54,6 +54,7 @@ export function ModelSelector({
               startTransition(() => {
                 setOptimisticModelId(model.id);
                 saveModelId(model.id);
+                saveReasoningEffort('medium'); // Reset reasoning effort to default when model changes - ADDED
               });
             }}
             className="gap-4 group/item flex flex-row justify-between items-center"

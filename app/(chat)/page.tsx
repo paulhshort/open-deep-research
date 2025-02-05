@@ -24,6 +24,7 @@ export default async function Page() {
         selectedModelId={selectedModelId}
         selectedVisibilityType="private"
         isReadonly={false}
+        selectedReasoningEffort="medium" // Default reasoning effort - ADDED
       />
       <DataStreamHandler id={id} />
     </>
