@@ -1078,6 +1078,7 @@ export async function POST(request: Request) {
             reasoningEffort: reasoningEffortString as 'low' | 'medium' | 'high' || 'medium', // Default to medium if not provided - ADDED
           },
         },
+        maxTokens: parseInt(outputTokensString || '30000'), // Apply outputTokens limit - ADDED
       });
 
       result.mergeIntoDataStream(dataStream);

@@ -67,7 +67,7 @@ function PureChatHeader({
       )}
 
       {/* {!isReadonly && (
-        <ModelSelector
+        <ModelSelector>
           selectedModelId={selectedModelId}
           className="order-1 md:order-2"
         />
@@ -86,9 +86,9 @@ function PureChatHeader({
         <Slider
           id="output-tokens"
           defaultValue={[outputTokens]}
-          max={40000} // Example max value, adjust based on model
+          max={40000} // Example max value, adjust based on model - UPDATED
           step={1000}
-          onValueChange={(value) => setOutputTokens(value[0])}
+          onValueChange={(value) => setOutputTokens(value[0])} // Update outputTokens state - ADDED
         />
         <div className="text-xs text-muted-foreground">{outputTokens} tokens</div>
       </div>

@@ -35,9 +35,12 @@ export default async function Page(props: { params: Promise<{ id: string }> }) {
 
   const cookieStore = await cookies();
   const modelIdFromCookie = cookieStore.get('model-id')?.value;
+  const reasoningEffortFromCookie = cookieStore.get('reasoning-effort')?.value; // Get reasoning effort from cookie - ADDED
   const selectedModelId =
     models.find((model) => model.id === modelIdFromCookie)?.id ||
     DEFAULT_MODEL_NAME;
+
+  const selectedReasoningEffort = reasoningEffortFromCookie || 'medium'; // Default reasoning effort if no cookie - ADDED
 
   return (
     <>

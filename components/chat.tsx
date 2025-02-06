@@ -45,7 +45,7 @@ export function Chat({
     reload,
   } = useChat({
     id,
-    body: { id, modelId: selectedModelId, reasoningEffort: selectedReasoningEffort }, // Include reasoningEffort in body - ADDED
+    body: { id, modelId: selectedModelId, reasoningEffort: selectedReasoningEffort, outputTokens: '30000' }, // Include reasoningEffort and outputTokens in body - ADDED
     initialMessages,
     experimental_throttle: 100,
     onFinish: () => {
@@ -82,7 +82,7 @@ export function Chat({
         />
 
         <Messages
-          chatId={chatId}
+          chatId={id}
           isLoading={isLoading}
           votes={votes}
           messages={messages}
@@ -112,7 +112,7 @@ export function Chat({
       </div>
 
       <Block
-        chatId={id}
+        chatId={chatId}
         input={input}
         setInput={setInput}
         handleSubmit={handleSubmit}
